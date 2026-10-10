@@ -7,10 +7,12 @@ from app.modelos import RespuestaTarifa
 
 
 class HistorialTarjeta:
-    calculos: list[RespuestaTarifa] = []
 
+    # El atributo calculos deja de ser un atributo público de clase 
+    # y pasa a ser uno distinto para cada instancia
     def __init__(self, tarjeta: str):
         self.tarjeta = tarjeta
+        self.calculos: list[RespuestaTarifa] = []
 
     def registrar(self, respuesta: RespuestaTarifa) -> None:
         self.calculos.append(respuesta)
