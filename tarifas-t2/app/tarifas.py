@@ -2,6 +2,9 @@
 
 from app.config import DESCUENTOS, MULTIPLO_REDONDEO, TARIFA_BASE
 from app.modelos import Cobro, Perfil, RespuestaTarifa, SolicitudTarifa
+from app.verificaciones import VerificadorSolicitudTarifa
+
+_verificador = VerificadorSolicitudTarifa()
 
 
 def aplicar_descuento(valor: int, perfil: Perfil) -> int:
@@ -12,6 +15,8 @@ def aplicar_descuento(valor: int, perfil: Perfil) -> int:
 
 
 def calcular_tarifa(solicitud: SolicitudTarifa) -> RespuestaTarifa:
+    # Primero realiza las verificaciones sobre la solicitud recibida
+    _verificador.verificar(solicitud)
     # Por ahora cada validación paga la tarifa completa.
     cobros = []
     for validacion in solicitud.validaciones:
