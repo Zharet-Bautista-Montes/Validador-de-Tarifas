@@ -9,3 +9,10 @@ def test_general_no_tiene_descuento():
 
 def test_descuento_redondea_a_multiplo_de_50():
     assert aplicar_descuento(TARIFA_BASE, Perfil.ESTUDIANTE) % 50 == 0
+
+# Asegura que se aplica un descuento distinto para cada perfil
+def test_descuento_por_perfil():
+    tarifa_G = aplicar_descuento(TARIFA_BASE, Perfil.GENERAL)
+    tarifa_E = aplicar_descuento(TARIFA_BASE, Perfil.ESTUDIANTE)
+    tarifa_AM = aplicar_descuento(TARIFA_BASE, Perfil.ADULTO_MAYOR)
+    assert tarifa_G != tarifa_E and tarifa_E != tarifa_AM and tarifa_G != tarifa_AM
