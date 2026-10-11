@@ -2,6 +2,9 @@
 from datetime import timedelta
 from app.config import DESCUENTOS, MULTIPLO_REDONDEO, TARIFA_BASE, VENTANA_TRANSBORDO_MIN, VALOR_TRANSBORDO
 from app.modelos import Cobro, Perfil, RespuestaTarifa, SolicitudTarifa
+from app.verificaciones import VerificadorSolicitudTarifa
+
+_verificador = VerificadorSolicitudTarifa()
 
 
 def aplicar_descuento(valor: int, perfil: Perfil) -> int:
@@ -12,6 +15,8 @@ def aplicar_descuento(valor: int, perfil: Perfil) -> int:
 
 
 def calcular_tarifa(solicitud: SolicitudTarifa) -> RespuestaTarifa:
+    # Primero realiza las verificaciones sobre la solicitud recibida
+    _verificador.verificar(solicitud)
     # Ahora se aplica la política de transbordos.
     ventana = timedelta(minutes=VENTANA_TRANSBORDO_MIN)
     inicio_viaje = None
@@ -35,7 +40,7 @@ def calcular_tarifa(solicitud: SolicitudTarifa) -> RespuestaTarifa:
             if transbordos_usados == 0:
                 tipo = "transbordo"
                 valor_base = VALOR_TRANSBORDO
-            elif transbordos_usados == 1:
+            else:
                 tipo = "transbordo_gratis"
                 valor_base = 0
             transbordos_usados += 1

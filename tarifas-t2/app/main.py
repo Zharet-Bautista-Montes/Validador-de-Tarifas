@@ -1,11 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 from app.historial import obtener_historial
 from app.modelos import RespuestaTarifa, SolicitudTarifa
 from app.tarifas import calcular_tarifa
+from app.verificaciones import ErrorVerificacionTarifa
 
 app = FastAPI(title="Tarifas Línea T2", version="0.3.0")
 
+@app.exception_handler(ErrorVerificacionTarifa)
+async def manejar_error_validacion_tarifa(
+    request: Request, exc: ErrorVerificacionTarifa
+) -> JSONResponse:
+    return JSONResponse(status_code=422, content={"detail": exc.errores})
 
 @app.get("/salud")
 def salud() -> dict[str, str]:
